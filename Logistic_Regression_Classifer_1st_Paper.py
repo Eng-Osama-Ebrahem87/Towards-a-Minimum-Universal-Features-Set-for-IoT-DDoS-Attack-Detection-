@@ -3,6 +3,8 @@
 import time
 import os
 
+import types
+
 import pandas as pd
 import numpy as np
 
@@ -72,13 +74,13 @@ print(" **************************************")
 
 ############ X,y ...   CICIDS2017 from kaggle
 
-#X = Data_target_df[[ 'PacketLengthMean', 'AveragePacketSize', 'BwdPacketLengthMin', 'FwdPackets/s' , 'MinPacketLength', 'Down/UpRatio']]  
+X = Data_target_df[[ 'PacketLengthMean', 'AveragePacketSize', 'BwdPacketLengthMin', 'FwdPackets/s' , 'MinPacketLength', 'Down/UpRatio']]  
 
 
 #X = Data_target_df[[ 'PacketLengthMean', 'AveragePacketSize', 'BwdPacketLengthMin', 'FwdPackets/s' ]]
 
 
-X = Data_target_df[[ 'PacketLengthMean', 'AveragePacketSize']]  # 2 Features  from the First Approach
+#X = Data_target_df[[ 'PacketLengthMean', 'AveragePacketSize']]  # 2 Features  from the First Approach
 
 
 #X = Data_target_df[[ 'PacketLengthMean', 'BwdPacketLengthMin', 'FwdPackets/s' ]]  # # # 3 Features  from the Second Approach
@@ -134,6 +136,73 @@ print(report)
  
 
 print(f'\n LR_time = {time.time() - start } \n')
+
+
+#calculate the memory usage according to each feature subset: 
+
+def is_instance_attr(obj, name):
+  if not hasattr(obj, name):
+    return False
+  if name.startswith("__") and name.endswith("__"):
+    return False
+  v = getattr(obj, name)
+  if isinstance(v, (types.BuiltinFunctionType, types.BuiltinMethodType, types.FunctionType, types.MethodType)):
+    return False
+  # See https://stackoverflow.com/a/17735709/
+  attr_type = getattr(type(obj), name, None)
+  if isinstance(attr_type, property):
+    return False
+  return True
+
+def get_instance_attrs(obj):
+  names = dir(obj)
+  names = [name for name in names if is_instance_attr(obj, name)]
+  return names
+
+
+def sklearn_sizeof(obj):
+  sum = 0
+  names = get_instance_attrs(obj)
+  for name in names:
+    v = getattr(obj, name)
+    v_type = type(v)
+    v_sizeof = v.__sizeof__()
+    sum += v_sizeof
+  return sum
+
+print("Instance state: {} B".format(sklearn_sizeof(LRc)))
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
 
 
 

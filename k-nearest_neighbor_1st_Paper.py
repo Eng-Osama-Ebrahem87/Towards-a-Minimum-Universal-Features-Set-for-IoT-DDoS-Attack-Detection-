@@ -3,6 +3,8 @@
 import time
 import os
 
+import types
+
 import pandas as pd
 import numpy as np
 
@@ -131,6 +133,41 @@ print(report)
 
 print(f'time = {time.time() - start}')
 
+#calculate the memory usage according to each feature subset: 
+
+def is_instance_attr(obj, name):
+  if not hasattr(obj, name):
+    return False
+  if name.startswith("__") and name.endswith("__"):
+    return False
+  v = getattr(obj, name)
+  if isinstance(v, (types.BuiltinFunctionType, types.BuiltinMethodType, types.FunctionType, types.MethodType)):
+    return False
+  # See https://stackoverflow.com/a/17735709/
+  attr_type = getattr(type(obj), name, None)
+  if isinstance(attr_type, property):
+    return False
+  return True
+
+def get_instance_attrs(obj):
+  names = dir(obj)
+  names = [name for name in names if is_instance_attr(obj, name)]
+  return names
+
+
+def sklearn_sizeof(obj):
+  sum = 0
+  names = get_instance_attrs(obj)
+  for name in names:
+    v = getattr(obj, name)
+    v_type = type(v)
+    v_sizeof = v.__sizeof__()
+    sum += v_sizeof
+  return sum
+
+print("Instance state: {} B".format(sklearn_sizeof(knn)))
+ 
+ 
 
 
 
@@ -138,6 +175,17 @@ print(f'time = {time.time() - start}')
 
 
 
+
+
+
+
+
+
+
+
+
+
+  
 
 
 
