@@ -15,7 +15,6 @@ from sklearn.ensemble import RandomForestClassifier
 
 from sklearn.metrics import classification_report 
 
-start = time.time()
 
 ######################################################### CICIDS2017 from kaggle -- - All files Available
 
@@ -69,13 +68,13 @@ print(" **************************************")
 
 ############ X,y ...   CICIDS2017 from kaggle
 
-#X = Data_target_df[[ 'PacketLengthMean', 'AveragePacketSize', 'BwdPacketLengthMin', 'FwdPackets/s' , 'MinPacketLength', 'Down/UpRatio']]  
+X = Data_target_df[[ 'PacketLengthMean', 'AveragePacketSize', 'BwdPacketLengthMin', 'FwdPackets/s' , 'MinPacketLength', 'Down/UpRatio']]  
 
 
 #X = Data_target_df[[ 'PacketLengthMean', 'AveragePacketSize', 'BwdPacketLengthMin', 'FwdPackets/s' ]]
 
 
-X = Data_target_df[[ 'PacketLengthMean', 'AveragePacketSize']]  # 2 Features  from the First Approach 
+#X = Data_target_df[[ 'PacketLengthMean', 'AveragePacketSize']]  # 2 Features  from the First Approach 
 
 
 #X = Data_target_df[[ 'PacketLengthMean', 'BwdPacketLengthMin', 'FwdPackets/s' ]]  # # # 3 Features  from the Second Approach
@@ -116,20 +115,23 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random
 # Create an instance of Random Forest Classifier
 forest = RandomForestClassifier ()
 
+start_train = time.time()
+
 # Fit the model
 forest.fit(X_train, y_train)
+print(f'training_time = {time.time() - start_train}')
+
+start_pred = time.time()
 
 # making predictions on the testing set
 y_pred = forest.predict(X_test)
-
+print(f'predict_time = {time.time() - start_pred}')
 
 # Measure model performance
 
 report = classification_report(y_test, y_pred)
 print("\nClassification Report: \n")
 print(report)
-
-print(f'time_RF = {time.time() - start}')
 
 #calculate the memory usage according to each feature subset: 
 

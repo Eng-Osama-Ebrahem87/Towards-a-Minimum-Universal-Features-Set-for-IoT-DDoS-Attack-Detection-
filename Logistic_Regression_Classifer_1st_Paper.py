@@ -16,10 +16,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report 
 
 
-start = time.time()
-
-
-
 ######################################################### CICIDS2017 from kaggle -- - All files Available
 
 Target_file_loc = r"E:\Datasets by kaggle 2\CICIDS2017\MachineLearningCSV\MachineLearningCVE\Friday-WorkingHours-Afternoon-DDos.pcap_ISCX_Pre.csv"
@@ -119,23 +115,24 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random
 # Create an instance of  Logistic Regression .. . 
 LRc = LogisticRegression()
 
+start_train = time.time()
 
 # Fit the model
 LRc.fit(X_train, y_train)
+print(f'training_time = {time.time() - start_train}')
 
+
+start_pred = time.time()
 
 # making predictions on the testing set
 y_pred = LRc.predict(X_test)
+print(f'predict_time = {time.time() - start_pred}')
 
 # Measure model performance
  
 report = classification_report(y_test, y_pred)
 print("\nClassification Report: \n")
 print(report)
-
- 
-
-print(f'\n LR_time = {time.time() - start } \n')
 
 
 #calculate the memory usage according to each feature subset: 
